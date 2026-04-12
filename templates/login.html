@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Sign In</h1>
+<form method="post">
+    <p>
+        Email<br>
+        <input type="email" name="email" class="form-control" required>
+    </p>
+    <p>
+        Password<br>
+        <input type="password" name="password" class="form-control" required>
+    </p>
+    <p>
+        <button type="submit" class="btn btn-custom-purple">Sign In</button>
+    </p>
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+</form>
+{% endblock %}

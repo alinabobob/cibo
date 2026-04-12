@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Register Form</h1>
+<form method="post">
+    <p>
+        Login / email<br>
+        <input type="email" name="email" class="form-control" required>
+    </p>
+    <p>
+        Password<br>
+        <input type="password" name="password" class="form-control" required>
+    </p>
+    <p>
+        Repeat password<br>
+        <input type="password" name="password_again" class="form-control" required>
+    </p>
+    <p>
+        Username<br>
+        <input type="text" name="username" class="form-control" required>
+    </p>
+    <p>
+        Name<br>
+        <input type="text" name="name" class="form-control" required>
+    </p>
+    <p>
+        Age<br>
+        <input type="number" name="age" class="form-control" required>
+    </p>
+    <p>
+        Description<br>
+        <input type="text" name="description" class="form-control">
+    </p>
+    <p>
+        <button type="submit" class="btn btn-custom-green">Submit</button>
+    </p>
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+</form>
+{% endblock %}

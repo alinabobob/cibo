@@ -1,0 +1,28 @@
+body {
+    padding-top: 20px;
+}
+.btn-custom-green {
+    background-color: #7d8778;
+    color: white;
+    border: none;
+}
+.btn-custom-green:hover {
+    background-color: #6c7568;
+    color: white;
+}
+.btn-custom-purple {
+    background-color: #827887;
+    color: white;
+    border: none;
+}
+.btn-custom-purple:hover {
+    background-color: #6f6673;
+    color: white;
+}
+@font-face {
+    font-family: 'Roshcha';
+    src: url('/static/fonts/Roscha.ttf');
+}
+.logo-text {
+    font-family: 'Roshcha', serif !important;
+}
