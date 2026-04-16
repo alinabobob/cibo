@@ -5,6 +5,7 @@ body {
     background-color: #7d8778;
     color: white;
     border: none;
+    font-family: 'Montserrat', sans-serif;
 }
 .btn-custom-green:hover {
     background-color: #6c7568;
@@ -14,6 +15,7 @@ body {
     background-color: #827887;
     color: white;
     border: none;
+    font-family: 'Montserrat', sans-serif;
 }
 .btn-custom-purple:hover {
     background-color: #6f6673;
@@ -25,4 +27,64 @@ body {
 }
 .logo-text {
     font-family: 'Roshcha', serif !important;
+}
+body {
+    background-image: url('/static/img/fon.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-attachment: fixed;
+}
+header h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    margin-top: 10px;
+}
+.navbar .d-flex.align-items-center {
+    margin-left: 500px;
+    gap: 5px;
+}
+.profile-container {
+    display: flex;
+    gap: 20px;
+}
+.profile-left {
+    width: 30%;
+}
+.profile-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #7d8778;
+    padding: 2px;
+}
+.nav-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #7d8778;
+}
+.profile-right {
+    width: 70%;
+    background-color: #7d8778;
+    padding: 20px;
+    border-radius: 10px;
+}
+.user-link {
+    text-decoration: none;
+    color: black;
+}
+.user-link:hover {
+    color: black;
+}
+.no-recipes {
+    text-align: center;
+    color: white;
+    font-size: 18px;
+}
+.add-recipe-btn {
+    margin-top: 15px;
+    text-align: center;
 }

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-left">
+        <img src="{{ url_for('static', filename=user.avatar or 'img/base_av.png') }}"
+             class="profile-avatar">
+        <h3>{{ user.name }}</h3>
+        <p><b>Username:</b> {{ user.username }}</p>
+        <p><b>Email:</b> {{ user.email }}</p>
+        <p><b>Age:</b> {{ user.age }}</p>
+        <p><b>Description:</b> {{ user.description }}</p>
+        {% if current_user.is_authenticated and current_user.id == user.id %}
+            <a href="/edit_profile" class="btn btn-custom-green mt-2">
+                Редактировать
+            </a>
+        {% endif %}
+    </div>
+    <div class="profile-right">
+        {% if recipes %}
+            {% for recipe in recipes %}
+                <div class="recipe-card">
+                    {% if recipe.image %}
+                        <img src="{{ url_for('static', filename=recipe.image) }}">
+                    {% endif %}
+                    <p>{{ recipe.text }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-recipes">
+                {{ user.name }} пока не опубликовал(а) ни одного рецепта
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% if current_user.is_authenticated and current_user.id == user.id %}
+    <div class="add-recipe-btn">
+        <button class="btn btn-custom-green">
+            Добавить рецепт
+        </button>
+    </div>
+{% endif %}
+{% endblock %}

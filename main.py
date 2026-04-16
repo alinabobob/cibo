@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect
-from flask_login import LoginManager, login_user, logout_user, login_required
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from data.user import User
 from data.db_session import create_session
 from data import db_session
@@ -15,6 +15,11 @@ login_manager.init_app(app)
 def load_user(user_id):
     session = create_session()
     return session.get(User, user_id)
+
+
+@app.route('/')
+def b():
+    return render_template('base.html')
 
 
 @app.route('/logout')
@@ -55,6 +60,30 @@ def register():
         session.commit()
         return redirect('/login')
     return render_template('register.html')
+
+
+@app.route('/profile/<int:user_id>')
+def profile(user_id):
+    session = create_session()
+    user = session.get(User, user_id)
+    if not user:
+        return "Пользователь не найден"
+    return render_template("profile.html", user=user, recipes=[])
+
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
+def edit_profile():
+    session = create_session()
+    user = session.get(User, current_user.id)
+    if request.method == 'POST':
+        user.username = request.form.get('username')
+        user.name = request.form.get('name')
+        user.age = int(request.form.get('age'))
+        user.description = request.form.get('description')
+        session.commit()
+        return redirect(f'/profile/{user.id}')
+    return render_template('edit_profile.html', user=user)
 
 
 if __name__ == '__main__':

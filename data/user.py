@@ -14,6 +14,7 @@ class User(SqlAlchemyBase, UserMixin):
     age = sa.Column(sa.Integer, nullable=True)
     description = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String, nullable=True)
+    avatar = sa.Column(sa.String, nullable=True)
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)

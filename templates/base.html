@@ -8,6 +8,7 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Playfair+Display&display=swap" rel="stylesheet">
     <title>{{ title }}</title>
 </head>
 <body>
@@ -16,18 +17,22 @@
         <h3 class="mb-0 logo-text">Рецепты</h3>
         <div class="d-flex align-items-center">
             {% if current_user.is_authenticated %}
-            <span class="mr-3">
-                {{ current_user.name }} ({{ current_user.email }})
-            </span>
-            <a href="/logout" class="btn btn-danger">Logout</a>
+                 <a href="/profile/{{ current_user.id }}" class="d-flex align-items-center user-link">
+                     <img src="{{ url_for('static', filename=current_user.avatar or 'img/base_av.png') }}"
+                          style="width:40px; height:40px; border-radius:50%; object-fit:cover; margin-right:8px;">
+                     <span class="mr-2">
+                         {{ current_user.name }}
+                     </span>
+                 </a>
+                 <a href="/logout" class="btn btn-custom-purple">Logout</a>
         {% else %}
-            <a href="/register" class="btn btn-custom-green mr-2">Register</a>
+            <a href="/register" class="btn btn-custom-green">Register</a>
             <a href="/login" class="btn btn-custom-purple">Sign in</a>
         {% endif %}
         </div>
         <span class="mr-3">Cibo</span>
     </nav>
-    <h4>Выбирайте то, что вам по душе!</h4>
+    <h4 class="header h4">Выбирайте то, что вам по душе!</h4>
 </header>
 <main role="main" class="container">
     {% block content %}{% endblock %}

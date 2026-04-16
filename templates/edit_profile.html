@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Редактировать профиль</h2>
+<form method="post">
+    <p>Username<br>
+    <input type="text" name="username" value="{{ user.username }}" class="form-control"></p>
+    <p>Name<br>
+    <input type="text" name="name" value="{{ user.name }}" class="form-control"></p>
+    <p>Age<br>
+    <input type="number" name="age" value="{{ user.age }}" class="form-control"></p>
+    <p>Description<br>
+    <input type="text" name="description" value="{{ user.description }}" class="form-control"></p>
+    <button class="btn btn-custom-green">Сохранить</button>
+</form>
+{% endblock %}
