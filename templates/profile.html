@@ -23,6 +23,7 @@
                     {% if recipe.image %}
                         <img src="{{ url_for('static', filename=recipe.image) }}">
                     {% endif %}
+                    <p style="font-size: 20px;">{{ recipe.title }}</p>
                     <p>{{ recipe.text }}</p>
                 </div>
             {% endfor %}
@@ -35,9 +36,9 @@
 </div>
 {% if current_user.is_authenticated and current_user.id == user.id %}
     <div class="add-recipe-btn">
-        <button class="btn btn-custom-green">
+        <a href="/add_recipe" class="btn btn-custom-green">
             Добавить рецепт
-        </button>
+        </a>
     </div>
 {% endif %}
 {% endblock %}

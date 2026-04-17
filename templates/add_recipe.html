@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Новый рецепт</h2>
+<form method="post" enctype="multipart/form-data">
+    <div class="recipe-image-upload">
+        <label for="image-input">
+            <div class="recipe-upload-box">
+                Нажмите, чтобы выбрать изображение
+            </div>
+        </label>
+        <input type="file" name="image" id="image-input" hidden>
+    </div>
+    <img id="preview" style="max-width:100%; display:none;">
+    <p>
+        Название<br>
+        <input type="text" name="title" class="form-control">
+    </p>
+    <p>
+        Описание<br>
+        <textarea name="text" class="form-control"></textarea>
+    </p>
+    <button class="btn btn-custom-green">Добавить</button>
+    {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+    {% endif %}
+</form>
+<script>
+document.getElementById('image-input').onchange = function (evt) {const [file] = this.files
+if (file) {const preview = document.getElementById('preview')
+preview.src = URL.createObjectURL(file)
+preview.style.display = 'block'}}
+</script>
+{% endblock %}

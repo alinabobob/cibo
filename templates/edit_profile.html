@@ -2,7 +2,14 @@
 
 {% block content %}
 <h2>Редактировать профиль</h2>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
+    <div class="avatar-upload">
+        <label for="avatar-input">
+            <img src="{{ url_for('static', filename=user.avatar or 'img/base_av.png') }}"
+                 class="profile-avatar clickable-avatar">
+        </label>
+        <input type="file" name="avatar" id="avatar-input" hidden>
+    </div>
     <p>Username<br>
     <input type="text" name="username" value="{{ user.username }}" class="form-control"></p>
     <p>Name<br>

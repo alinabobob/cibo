@@ -2,6 +2,7 @@ import sqlalchemy as sa
 from flask_login import UserMixin
 from .db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import relationship
 
 
 class User(SqlAlchemyBase, UserMixin):
@@ -15,6 +16,7 @@ class User(SqlAlchemyBase, UserMixin):
     description = sa.Column(sa.String, nullable=True)
     hashed_password = sa.Column(sa.String, nullable=True)
     avatar = sa.Column(sa.String, nullable=True)
+    recipes = relationship("Recipe", back_populates="user")
 
     def set_password(self, password):
         self.hashed_password = generate_password_hash(password)
