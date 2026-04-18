@@ -120,3 +120,143 @@ header h4 {
 .recipe-upload-box:hover {
     background-color: #f5f5f5;
 }
+.form-control {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-family: 'Montserrat', sans-serif;
+}
+.form-control::placeholder {
+    color: #6c756d;
+}
+.form-control:focus {
+    border-color: #7d8778;
+    box-shadow: 0 0 0 0.2rem rgba(125, 135, 120, 0.25);
+    outline: none;
+}
+.card {
+    display: flex;
+    flex-direction: column;
+}
+.card-img-top {
+    width: 100%;
+    height: 0;
+    padding-top: 100%;
+    object-fit: cover;
+}
+.categories-sidebar {
+    padding: 15px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+}
+.categories-sidebar h5 {
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-bottom: 15px;
+}
+.category-button {
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    color: #495057;
+    text-transform: uppercase; /
+    font-weight: 500;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+.category-button:hover {
+    background-color: #e2e6ea;
+    color: #212529;
+}
+.category-button.active {
+    background-color: #7d8778;
+    color: white;
+    border-color: #7d8778;
+}
+#filter-toggle {
+    background-color: #827887;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-family: 'Montserrat', sans-serif;
+    transition: background-color 0.2s;
+}
+
+#filter-toggle:hover {
+    background-color: #6f6673;
+}
+#filters-dropdown {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+#filters-dropdown.show {
+    display: block;
+}
+.card-body {
+    padding: 1.25rem;
+}
+.form-select {
+    font-family: 'Montserrat', sans-serif;
+    border-color: #212529;
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+.form-select:focus {
+    border-color: #7d8778;
+    box-shadow: 0 0 0 0.2rem rgba(125, 135, 120, 0.25);
+}
+.container-fluid {
+    max-width: 1300px;
+    margin: auto;
+}
+.input-group {
+    max-width: 600px;
+    margin: 0 auto 15px auto;
+}
+.row > * {
+    padding-right: calc(var(--bs-gutter-x) * 0.5);
+    padding-left: calc(var(--bs-gutter-x) * 0.5);
+}
+.row {
+    --bs-gutter-x: 1rem;
+    --bs-gutter-y: 1rem;
+}
+.container-fluid.mt-3 ~ .container > .row {
+    margin-top: -0.5rem !important;
+}
+@media (max-width: 767.98px) {
+    .categories-sidebar {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    .categories-sidebar h5 {
+        display: none;
+    }
+    .category-button {
+        flex: 0 0 auto;
+        width: auto;
+        margin-right: 5px;
+        padding: 8px 12px;
+        white-space: nowrap;
+    }
+    .col-md-3.col-lg-2 {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    .col-md-9.col-lg-10 {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}

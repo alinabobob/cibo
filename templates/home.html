@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container-fluid mt-3">
+    <div class="row">
+        <div class="col-md-3 col-lg-2 d-none d-md-block">
+            <div class="categories-sidebar sticky-top">
+                <button class="btn category-button w-100 mb-1">Завтрак</button>
+                <button class="btn category-button w-100 mb-1">Обед</button>
+                <button class="btn category-button w-100 mb-1">Ужин</button>
+                <button class="btn category-button w-100">Десерты</button>
+                <button class="btn category-button w-100">Напитки</button>
+            </div>
+        </div>
+
+        <main class="col-md-9 col-lg-10 ps-md-3">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Поиск рецептов..." aria-label="Поиск рецептов...">
+                <button class="btn btn-custom-purple" type="button">Найти</button>
+            </div>
+
+            <header class="text-center my-4">
+                <h2>Популярные рецепты</h2>
+                <p class="lead">Найдите вдохновение для следующего кулинарного шедевра.</p>
+            </header>
+
+            <div class="text-center mb-3">
+                <button class="btn btn-primary" id="filter-toggle" aria-expanded="false">
+                    Фильтры ▼
+                </button>
+            </div>
+            <div id="filters-dropdown" class="collapse mb-4">
+                <div class="card card-body">
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <h6>Кухня</h6>
+                            <select class="form-select">
+                                <option selected>Выберите кухню</option>
+                                <option>Австралийская</option>
+                                <option>Австрийская</option>
+                                <option>Азербайджанская</option>
+                                <option>Азиатская</option>
+                                <option>Арабская</option>
+                                <option>Аргентинская</option>
+                                <option>Армянская</option>
+                                <option>Английская</option>
+                                <option>Американская</option>
+                                <option>Африканская</option>
+                                <option>Башкирская</option>
+                                <option>Балканская</option>
+                                <option>Белорусская</option>
+                                <option>Бельгийская</option>
+                                <option>Болгарская</option>
+                                <option>Бразильская</option>
+                                <option>Британская</option>
+                                <option>Бурятская</option>
+                                <option>Венгерская</option>
+                                <option>Вьетнамская</option>
+                                <option>Восточная</option>
+                                <option>Гавайская</option>
+                                <option>Греческая</option>
+                                <option>Грузинская</option>
+                                <option>Датская</option>
+                                <option>Дагестанская</option>
+                                <option>Дальневосточная</option>
+                                <option>Европейская</option>
+                                <option>Египетская</option>
+                                <option>Еврейская</option>
+                                <option>Израильская</option>
+                                <option>Индийская</option>
+                                <option>Индонезийская</option>
+                                <option>Ирландская</option>
+                                <option>Иранская</option>
+                                <option>Испанская</option>
+                                <option>Итальянская</option>
+                                <option>Кабардинская</option>
+                                <option>Казахская</option>
+                                <option>Канадская</option>
+                                <option>Карельская</option>
+                                <option>Карибская</option>
+                                <option>Катайская</option>
+                                <option>Корейская</option>
+                                <option>Кубинская</option>
+                                <option>Лапландская</option>
+                                <option>Латвийская</option>
+                                <option>Ливанская</option>
+                                <option>Литовская</option>
+                                <option>Марийская</option>
+                                <option>Марокканская</option>
+                                <option>Мексиканская</option>
+                                <option>Молдавская</option>
+                                <option>Монгольская</option>
+                                <option>Немецкая</option>
+                                <option>Норвежская</option>
+                                <option>Осетинская</option>
+                                <option>Перуанская</option>
+                                <option>Польская</option>
+                                <option>Португальская</option>
+                                <option>Прибалтийская</option>
+                                <option>Русская</option>
+                                <option>Румынская</option>
+                                <option>Северная</option>
+                                <option>Сербская</option>
+                                <option>Сибирская</option>
+                                <option>Сицилийская</option>
+                                <option>Словацкая</option>
+                                <option>Славянская</option>
+                                <option>Среднеазиатская</option>
+                                <option>Тайская</option>
+                                <option>Татарская</option>
+                                <option>Таджикская</option>
+                                <option>Тибетская</option>
+                                <option>Турецкая</option>
+                                <option>Тунисская</option>
+                                <option>Туркменская</option>
+                                <option>Удмуртская</option>
+                                <option>Узбекская</option>
+                                <option>Украинская</option>
+                                <option>Филиппинская</option>
+                                <option>Финская</option>
+                                <option>Французская</option>
+                                <option>Хорватская</option>
+                                <option>Чехословацкая</option>
+                                <option>Чешская</option>
+                                <option>Чеченская</option>
+                                <option>Чукотская</option>
+                                <option>Шведская</option>
+                                <option>Швейцарская</option>
+                                <option>Шотландская</option>
+                                <option>Эстонская</option>
+                                <option>Якутская</option>
+                                <option>Японская</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6>Время приготовления</h6>
+                            <select class="form-select">
+                                <option selected>Выберите время</option>
+                                <option>до 30 минут</option>
+                                <option>30-60 минут</option>
+                                <option>более 1 часа</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6>Тип приема пищи</h6>
+                            <select class="form-select">
+                                <option selected>Выберите тип</option>
+                                <option>Завтрак</option>
+                                <option>Обед</option>
+                                <option>Ужин</option>
+                                <option>Десерт</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <h6>Тип блюда</h6>
+                            <select class="form-select">
+                                <option selected>Выберите тип блюда</option>
+                                <option>Суп</option>
+                                <option>Салат</option>
+                                <option>Основное блюдо</option>
+                                <option>Выпечка</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button class="btn btn-custom-green mt-2" type="button">Найти</button>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ url_for('static', filename='img/recipes/recipe1.jpg') }}"
+                                 class="card-img-top"
+                                 alt="Рецепт 1">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate">Нежный тирамису с малиной</h5>
+                                <p class="card-text flex-grow-1 text-muted small">Классический итальянский десерт с ягодной ноткой.</p>
+                                <a href="#" class="btn btn-custom-green mt-auto w-100">Посмотреть рецепт</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ url_for('static', filename='img/recipe2.jpg') }}" class="card-img-top" alt="Рецепт 2">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate">Сытный борщ по-домашнему</h5>
+                                <p class="card-text flex-grow-1 text-muted small">Тот самый вкус из детства.</p>
+                                <a href="#" class="btn btn-custom-green mt-auto w-100">Посмотреть рецепт</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ url_for('static', filename='img/recipe3.jpg') }}" class="card-img-top" alt="Рецепт 3">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate">Лёгкий греческий салат</h5>
+                                <p class="card-text flex-grow-1 text-muted small">Свежий и полезный салат для лёгкого ужина.</p>
+                                <a href="#" class="btn btn-custom-green mt-auto w-100">Посмотреть рецепт</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                        <div class="card h-100 shadow-sm">
+                            <img src="{{ url_for('static', filename='img/recipe4.jpg') }}" class="card-img-top" alt="Рецепт 4">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title text-truncate">Паста карбонара</h5>
+                                <p class="card-text flex-grow-1 text-muted small">Идеальное сочетание бекона, сыра и спагетти.</p>
+                                <a href="#" class="btn btn-custom-green mt-auto w-100">Посмотреть рецепт</a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    // JavaScript для переключения меню фильтров
+    document.getElementById('filter-toggle').addEventListener('click', function() {
+        var filtersDropdown = document.getElementById('filters-dropdown');
+        var filterButton = this;
+
+        // Используем Bootstrap's Collapse component's API (если Bootstrap JS подключен)
+        // Или ручное переключение класса 'show'
+        var isShow = filtersDropdown.classList.contains('show');
+
+        if (isShow) {
+            filtersDropdown.classList.remove('show');
+            filterButton.setAttribute('aria-expanded', 'false');
+            filterButton.innerHTML = 'Фильтры ▼'; // Восстанавливаем текст кнопки
+        } else {
+            filtersDropdown.classList.add('show');
+            filterButton.setAttribute('aria-expanded', 'true');
+            filterButton.innerHTML = 'Фильтры ▲'; // Меняем текст кнопки
+        }
+    });
+
+    //JavaScript для стилизации активной кнопки категории (опционально)
+    document.querySelectorAll('.category-button').forEach(button => {
+        button.addEventListener('click', function() {
+            document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

@@ -31,8 +31,8 @@ def load_user(user_id):
 
 
 @app.route('/')
-def b():
-    return render_template('base.html')
+def home():
+    return render_template('home.html')
 
 
 @app.route('/logout')
@@ -148,6 +148,12 @@ def add_recipe():
         recipe.user_id = current_user.id
         try:
             recipe.title = request.form.get('title')
+            recipe.category = request.form.get('category')
+            recipe.cuisine = request.form.get('cuisine')
+            recipe.complexity = request.form.get('complexity')
+            recipe.ingredients = request.form.get('ingredients')
+            recipe.cooking_time = request.form.get('cooking_time')
+            recipe.type = request.form.get('type')
             recipe.text = request.form.get('text')
         except Exception as e:
             return render_template('add_recipe.html',
