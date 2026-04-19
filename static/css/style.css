@@ -270,3 +270,7 @@ header h4 {
     border-radius: 15px;
     padding: 10px;
 }
+.category-button a {
+    text-decoration: none;
+    color: inherit;
+}

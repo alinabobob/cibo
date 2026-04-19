@@ -24,6 +24,12 @@ def process_image(file, save_path):
     im.save(save_path)
 
 
+def get_recipes_by_category(category_name):
+    session = create_session()
+    recipes = session.query(Recipe).filter(Recipe.category.ilike(f'%{category_name}%')).all()
+    return recipes, f"{category_name.capitalize()}"
+
+
 @login_manager.user_loader
 def load_user(user_id):
     session = create_session()
@@ -32,7 +38,120 @@ def load_user(user_id):
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    kitchens = [
+                   "Австралийская",
+                   "Австрийская",
+                   "Азербайджанская",
+                   "Азиатская",
+                   "Арабская",
+                   "Аргентинская",
+                   "Армянская",
+                   "Английская",
+                   "Американская",
+                   "Африканская",
+                   "Башкирская",
+                   "Балканская",
+                   "Белорусская",
+                   "Бельгийская",
+                   "Болгарская",
+                   "Бразильская",
+                   "Британская",
+                   "Бурятская",
+                   "Венгерская",
+                   "Вьетнамская",
+                   "Восточная",
+                   "Гавайская",
+                   "Греческая",
+                   "Грузинская",
+                   "Датская",
+                   "Дагестанская",
+                   "Дальневосточная",
+                   "Европейская",
+                   "Египетская",
+                   "Еврейская",
+                   "Израильская",
+                   "Индийская",
+                   "Индонезийская",
+                   "Ирландская",
+                   "Иранская",
+                   "Испанская",
+                   "Итальянская",
+                   "Кабардинская",
+                   "Казахская",
+                   "Канадская",
+                   "Карельская",
+                   "Карибская",
+                   "Катайская",
+                   "Корейская",
+                   "Кубинская",
+                   "Лапландская",
+                   "Латвийская",
+                   "Ливанская",
+                   "Литовская",
+                   "Марийская",
+                   "Марокканская",
+                   "Мексиканская",
+                   "Молдавская",
+                   "Монгольская",
+                   "Немецкая",
+                   "Норвежская",
+                   "Осетинская",
+                   "Перуанская",
+                   "Польская",
+                   "Португальская",
+                   "Прибалтийская",
+                   "Русская",
+                   "Румынская",
+                   "Северная",
+                   "Сербская",
+                   "Сибирская",
+                   "Сицилийская",
+                   "Словацкая",
+                   "Славянская",
+                   "Среднеазиатская",
+                   "Тайская",
+                   "Татарская",
+                   "Таджикская",
+                   "Тибетская",
+                   "Турецкая",
+                   "Тунисская",
+                   "Туркменская",
+                   "Удмуртская",
+                   "Узбекская",
+                   "Украинская",
+                   "Филиппинская",
+                   "Финская",
+                   "Французская",
+                   "Хорватская",
+                   "Чехословацкая",
+                   "Чешская",
+                   "Чеченская",
+                   "Чукотская",
+                   "Шведская",
+                   "Швейцарская",
+                   "Шотландская",
+                   "Эстонская",
+                   "Якутская",
+                   "Японская"
+            ]
+    return render_template('home.html', kitchens=kitchens)
+
+
+@app.route('/search')
+def search_recipes():
+    query = request.args.get('query')
+
+    session = create_session()
+    recipes = []
+
+    if query:
+        recipes = session.query(Recipe).filter(
+            (Recipe.title.ilike(f'%{query}%')) |
+            (Recipe.text.ilike(f'%{query}%'))
+        ).all()
+
+    return render_template('category_recipes.html',
+                           recipes=recipes)
 
 
 @app.route('/logout')
@@ -171,7 +290,7 @@ def add_recipe():
     return render_template('add_recipe.html')
 
 
-@app.route('/recipe/<int:recipe_id>') #Страница рецепта, черновик, останьное тебе((
+@app.route('/recipe/<int:recipe_id>')
 def recipe_page(recipe_id):
     session = create_session()
     recipe = session.get(Recipe, recipe_id)
@@ -180,6 +299,36 @@ def recipe_page(recipe_id):
     recipe.views += 1
     session.commit()
     return render_template('recipe.html', recipe=recipe)
+
+
+@app.route('/recipes/breakfast')
+def recipes_breakfast():
+    recipes, category_title = get_recipes_by_category('Завтрак')
+    return render_template('category_recipes.html', recipes=recipes, category_title=category_title)
+
+
+@app.route('/recipes/lunch')
+def recipes_lunch():
+    recipes, category_title = get_recipes_by_category('Обед')
+    return render_template('category_recipes.html', recipes=recipes, category_title=category_title)
+
+
+@app.route('/recipes/dinner')
+def recipes_dinner():
+    recipes, category_title = get_recipes_by_category('Ужин')
+    return render_template('category_recipes.html', recipes=recipes, category_title=category_title)
+
+
+@app.route('/recipes/dessert')
+def recipes_dessert():
+    recipes, category_title = get_recipes_by_category('Десерт')
+    return render_template('category_recipes.html', recipes=recipes, category_title=category_title)
+
+
+@app.route('/recipes/drinks')
+def recipes_drinks():
+    recipes, category_title = get_recipes_by_category('Напитки')
+    return render_template('category_recipes.html', recipes=recipes, category_title=category_title)
 
 
 @app.route('/recipes')
