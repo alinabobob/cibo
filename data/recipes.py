@@ -16,4 +16,6 @@ class Recipe(SqlAlchemyBase):
     ingredients = sa.Column(sa.String, nullable=False)
     cooking_time = sa.Column(sa.Integer, nullable=True)
     type = sa.Column(sa.String, nullable=True)
+    likes = sa.Column(sa.Integer, default=0)
+    views = sa.Column(sa.Integer, default=0)
     user = relationship("User", back_populates="recipes")

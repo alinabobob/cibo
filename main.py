@@ -171,6 +171,53 @@ def add_recipe():
     return render_template('add_recipe.html')
 
 
+@app.route('/recipe/<int:recipe_id>') #Страница рецепта, черновик, останьное тебе((
+def recipe_page(recipe_id):
+    session = create_session()
+    recipe = session.get(Recipe, recipe_id)
+    if not recipe:
+        return "Рецепт не найден"
+    recipe.views += 1
+    session.commit()
+    return render_template('recipe.html', recipe=recipe)
+
+
+@app.route('/recipes')
+def all_recipes():
+    session = create_session()
+    recipes = session.query(Recipe).all()
+    return render_template('all_recipes.html', recipes=recipes)
+
+
+@app.route('/recipes/top')
+def top_recipes():
+    session = create_session()
+    recipes = session.query(Recipe).order_by(Recipe.likes.desc()).all()
+    return render_template('top_recipes.html', recipes=recipes)
+
+
+@app.route('/like/<int:recipe_id>')
+@login_required
+def like(recipe_id):
+    session = create_session()
+    recipe = session.get(Recipe, recipe_id)
+    if recipe:
+        recipe.likes += 1
+        session.commit()
+    return redirect(request.referrer or '/')
+
+
+@app.route('/subscribe/<int:user_id>')
+@login_required
+def subscribe(user_id):
+    session = create_session()
+    user = session.get(User, user_id)
+    if user:
+        user.subscribers += 1
+        session.commit()
+    return redirect(request.referrer or '/')
+
+
 if __name__ == '__main__':
     db_session.global_init("db/cibo.sqlite")
     app.run(port=8080, host='127.0.0.1')

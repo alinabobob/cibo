@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Лучшие рецепты</h2>
+<a href="/" class="btn btn-secondary mb-3">← Назад</a>
+{% for recipe in recipes %}
+<div class="d-flex mb-4">
+    <div class="recipe-card me-3" style="width: 60%;">
+        <h4>{{ recipe.title }}</h4>
+        {% if recipe.image %}
+            <img src="{{ url_for('static', filename=recipe.image) }}" style="max-width:100%;">
+        {% endif %}
+        <p>{{ recipe.text }}</p>
+        <a href="/recipe/{{ recipe.id }}" class="btn btn-custom-green">
+            Открыть
+        </a>
+    </div>
+    <div class="stats-box" style="width: 40%;">
+        <h5>Почему в топе?</h5>
+        <p>❤️: {{ recipe.likes }}</p>
+        <p>👁️: {{ recipe.views }}</p>
+        <a href="/like/{{ recipe.id }}" class="btn btn-danger w-100 mb-2">
+            ❤️
+        </a>
+        <a href="/subscribe/{{ recipe.user_id }}" class="btn btn-dark w-100">
+            Подписаться
+        </a>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
