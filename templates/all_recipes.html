@@ -11,8 +11,8 @@
         {% endif %}
         <p>{{ recipe.text }}</p>
         <div>
-            ❤️ {{ recipe.likes }} |
-            👁️ {{ recipe.views }}
+            <img src="{{ url_for('static', filename='img/plike.png') }}" class="icon"> {{ recipe.likes }}
+            <img src="{{ url_for('static', filename='img/plook.png') }}" class="icon"> {{ recipe.views }}
         </div>
         <a href="/recipe/{{ recipe.id }}" class="btn btn-custom-green mt-2">
             Открыть

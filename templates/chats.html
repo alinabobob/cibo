@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="text-center mb-3">Чаты</h2>
+<div class="chat-list">
+    {% for user in users %}
+        <a href="/chat/{{ user.id }}" class="chat-item">
+            <div class="chat-item-name">
+                {{ user.name }}
+            </div>
+            <div class="chat-item-sub">
+                @{{ user.username }}
+            </div>
+        </a>
+    {% endfor %}
+</div>
+{% endblock %}

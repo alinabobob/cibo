@@ -11,43 +11,40 @@
         </label>
         <input type="file" name="image" id="image-input" hidden>
     </div>
-    <img id="preview" style="max-width:100%; display:none;">
+    <img src="{{ url_for('static', filename=recipe.image) }}" style="max-width:200px;">
     <p>
         Название<br>
-        <input type="text" name="title" class="form-control">
+        <input type="text" name="title" class="form-control" value="{{ recipe.title }}">
     </p>
     <p>
         Категория<br>
-        <input type="text" name="category" class="form-control">
+        <input type="text" name="category" class="form-control" value="{{ recipe.category }}">
     </p>
     <p>
         Кухня<br>
-        <input type="text" name="cuisine" class="form-control">
+        <input type="text" name="cuisine" class="form-control" value="{{ recipe.cuisine }}">
     </p>
     <p>
         Сложность<br>
-        <input type="text" name="complexity" class="form-control">
+        <input type="text" name="complexity" class="form-control" value="{{ recipe.complexity }}">
     </p>
     <p>
         Ингредиенты<br>
-        <textarea name="ingredients" class="form-control"></textarea>
+        <textarea name="ingredients" class="form-control">{{ recipe.ingredients }}</textarea>
     </p>
     <p>
-        Время готовки(мин)<br>
-        <input type="text" name="cooking_time" class="form-control">
+        Время готовки<br>
+        <input type="text" name="cooking_time" class="form-control" value="{{ recipe.cooking_time }}">
     </p>
     <p>
         Тип блюда<br>
-        <input type="text" name="type" class="form-control">
+        <input type="text" name="type" class="form-control" value="{{ recipe.type }}">
     </p>
     <p>
         Описание<br>
-        <textarea name="text" class="form-control"></textarea>
+        <textarea name="text" class="form-control">{{ recipe.text }}</textarea>
     </p>
-    <button class="btn btn-custom-green">Добавить</button>
-    {% if message %}
-        <div class="alert alert-danger">{{ message }}</div>
-    {% endif %}
+    <button class="btn btn-custom-green">Сохранить</button>
 </form>
 <script>
 document.getElementById('image-input').onchange = function (evt) {const [file] = this.files

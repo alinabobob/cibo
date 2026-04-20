@@ -5,6 +5,11 @@ from data.recipes import Recipe
 from data.db_session import create_session
 from data import db_session
 from PIL import Image
+from data.likes import Like
+from data.views import View
+from data.messages import Message
+from sqlalchemy import or_
+from data.subscriptions import Subscription
 import os
 import uuid
 
@@ -258,6 +263,41 @@ def edit_profile():
     return render_template('edit_profile.html', user=user)
 
 
+@app.route('/chat/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+def chat(user_id):
+    session = create_session()
+    if request.method == 'POST':
+        msg = Message()
+        msg.sender_id = current_user.id
+        msg.receiver_id = user_id
+        msg.text = request.form.get('text')
+        session.add(msg)
+        session.commit()
+    messages = session.query(Message).filter(((Message.sender_id == current_user.id) and
+                                              (Message.receiver_id == user_id)) |
+                                             ((Message.sender_id == user_id) &
+                                              (Message.receiver_id == current_user.id))).order_by(Message.created_at).all()
+    user = session.get(User, user_id)
+    return render_template('chat.html', messages=messages, user=user)
+
+
+@app.route('/chats')
+@login_required
+def chats():
+    session = create_session()
+    messages = session.query(Message).filter(or_((Message.sender_id == current_user.id) |
+                                                 (Message.receiver_id == current_user.id))).all()
+    users = set()
+    for m in messages:
+        if m.sender_id != current_user.id:
+            users.add(m.sender_id)
+        if m.receiver_id != current_user.id:
+            users.add(m.receiver_id)
+    users = [session.get(User, uid) for uid in users]
+    return render_template('chats.html', users=users)
+
+
 @app.route('/add_recipe', methods=['GET', 'POST'])
 @login_required
 def add_recipe():
@@ -277,13 +317,17 @@ def add_recipe():
         except Exception as e:
             return render_template('add_recipe.html',
                                    message="Название или описание введёно некорректно")
-        f = request.files.get('image')
-        if f and f.filename:
-            ff = f"{uuid.uuid4()}.{f.filename.rsplit('.', 1)[-1]}"
-            path = f"img/recipes/{ff}"
-            full_path = os.path.join('static', path)
-            process_image(f, full_path)
-            recipe.image = path
+        try:
+            f = request.files.get('image')
+            if f and f.filename:
+                ff = f"{uuid.uuid4()}.{f.filename.rsplit('.', 1)[-1]}"
+                path = f"img/recipes/{ff}"
+                full_path = os.path.join('static', path)
+                process_image(f, full_path)
+                recipe.image = path
+        except ValueError:
+            return render_template('add_recipe.html',
+                                   message="Неизвестное расширение файла")
         session.add(recipe)
         session.commit()
         return redirect(f'/profile/{current_user.id}')
@@ -297,6 +341,10 @@ def recipe_page(recipe_id):
     if not recipe:
         return "Рецепт не найден"
     recipe.views += 1
+    if current_user.is_authenticated:
+        view = View(user_id=current_user.id,
+                    recipe_id=recipe_id)
+        session.add(view)
     session.commit()
     return render_template('recipe.html', recipe=recipe)
 
@@ -345,14 +393,50 @@ def top_recipes():
     return render_template('top_recipes.html', recipes=recipes)
 
 
+@app.route('/edit_recipe/<int:recipe_id>', methods=['GET', 'POST'])
+@login_required
+def edit_recipe(recipe_id):
+    session = create_session()
+    recipe = session.get(Recipe, recipe_id)
+    if not recipe:
+        return "Рецепт не найден"
+    if recipe.user_id != current_user.id:
+        return redirect('/')
+    if request.method == 'POST':
+        recipe.title = request.form.get('title')
+        recipe.text = request.form.get('text')
+        recipe.category = request.form.get('category')
+        recipe.cuisine = request.form.get('cuisine')
+        recipe.type = request.form.get('type')
+        f = request.files.get('image')
+        if f and f.filename:
+            ff = f"{uuid.uuid4()}.{f.filename.rsplit('.', 1)[-1]}"
+            path = f"img/recipes/{ff}"
+            full_path = os.path.join('static', path)
+            process_image(f, full_path)
+            recipe.image = path
+        session.commit()
+        return redirect(f'/profile/{current_user.id}')
+    return render_template('edit_recipe.html', recipe=recipe)
+
+
 @app.route('/like/<int:recipe_id>')
 @login_required
 def like(recipe_id):
     session = create_session()
     recipe = session.get(Recipe, recipe_id)
-    if recipe:
-        recipe.likes += 1
-        session.commit()
+    if not recipe:
+        return redirect('/')
+    if recipe.user_id == current_user.id:
+        return redirect(request.referrer or '/')
+    existing = session.query(Like).filter(Like.user_id == current_user.id,
+                                          Like.recipe_id == recipe_id).first()
+    if existing:
+        return redirect(request.referrer or '/')
+    like = Like(user_id=current_user.id, recipe_id=recipe_id)
+    session.add(like)
+    recipe.likes += 1
+    session.commit()
     return redirect(request.referrer or '/')
 
 
@@ -361,10 +445,86 @@ def like(recipe_id):
 def subscribe(user_id):
     session = create_session()
     user = session.get(User, user_id)
-    if user:
-        user.subscribers += 1
-        session.commit()
+    if not user:
+        return redirect('/')
+    if user.id == current_user.id:
+        return redirect(request.referrer or '/')
+    existing = session.query(Subscription).filter(Subscription.follower_id == current_user.id,
+                                                  Subscription.followed_id == user_id).first()
+    if existing:
+        return redirect(request.referrer or '/')
+    sub = Subscription(follower_id=current_user.id, followed_id=user_id)
+    session.add(sub)
+    user.subscribers += 1
+    session.commit()
     return redirect(request.referrer or '/')
+
+
+@app.route('/advice')
+@login_required
+def advice():
+    session = create_session()
+    likes = session.query(Like).filter(Like.user_id == current_user.id).all()
+    views = session.query(View).filter(View.user_id == current_user.id).all()
+    score = {}
+
+
+    def add_score(recipe, weight):
+        if recipe.id not in score:
+            score[recipe.id] = 0
+        score[recipe.id] += weight
+
+
+    for like in likes:
+        r = session.get(Recipe, like.recipe_id)
+        if not r:
+            continue
+        conditions = []
+        if r.category:
+            conditions.append(Recipe.category == r.category)
+        if r.cuisine:
+            conditions.append(Recipe.cuisine == r.cuisine)
+        if r.type:
+            conditions.append(Recipe.type == r.type)
+        if conditions:
+            similar = session.query(Recipe).filter(or_(*conditions)).all()
+        else:
+            similar = []
+        for s in similar:
+            add_score(s, 3)
+    for view in views:
+        r = session.get(Recipe, view.recipe_id)
+        if not r:
+            continue
+        conditions = []
+        if r.category:
+            conditions.append(Recipe.category == r.category)
+        if r.cuisine:
+            conditions.append(Recipe.cuisine == r.cuisine)
+        if r.type:
+            conditions.append(Recipe.type == r.type)
+        if conditions:
+            similar = session.query(Recipe).filter(or_(*conditions)).all()
+        else:
+            similar = []
+        for s in similar:
+            add_score(s, 1)
+    user_ingredients = set()
+    for like in likes:
+        r = session.get(Recipe, like.recipe_id)
+        if r and r.ingredients:
+            user_ingredients |= set(r.ingredients.lower().split())
+    for r in session.query(Recipe).all():
+        if not r.ingredients:
+            continue
+        n = user_ingredients and set(r.ingredients.lower().split())
+        if n:
+            add_score(r, len(n) * 2)
+    seen_ids = {l.recipe_id for l in likes} | {v.recipe_id for v in views}
+    n = sorted([session.get(Recipe, rid) for rid in score if rid not in seen_ids],
+               key=lambda r: score.get(r.id, 0),
+               reverse=True)
+    return render_template("advice.html", recipes=n[:20])
 
 
 if __name__ == '__main__':

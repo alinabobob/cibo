@@ -17,14 +17,17 @@
     </div>
     <div class="stats-box" style="width: 40%;">
         <h5>Почему в топе?</h5>
-        <p>❤️: {{ recipe.likes }}</p>
-        <p>👁️: {{ recipe.views }}</p>
-        <a href="/like/{{ recipe.id }}" class="btn btn-danger w-100 mb-2">
-            ❤️
-        </a>
-        <a href="/subscribe/{{ recipe.user_id }}" class="btn btn-dark w-100">
-            Подписаться
-        </a>
+        <img src="{{ url_for('static', filename='img/plike.png') }}" class="icon"> {{ recipe.likes }}
+        <img src="{{ url_for('static', filename='img/plook.png') }}" class="icon"> {{ recipe.views }}
+        {% if current_user.is_authenticated and current_user.id != recipe.user_id %}
+            <a href="/like/{{ recipe.id }}" class="btn btn-custom-purple w-100 mb-2">
+                <img src="{{ url_for('static', filename='img/like.png') }}" class="icon">
+                   Лайк
+            </a>
+            <a href="/subscribe/{{ recipe.user_id }}" class="btn btn-custom-purple w-100">
+                Подписаться
+            </a>
+        {% endif %}
     </div>
 </div>
 {% endfor %}

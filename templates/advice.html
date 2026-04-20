@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">Может вам понравиться</h2>
+<a href="/" class="btn btn-secondary mb-3">← Назад</a>
+{% if recipes %}
+    {% for recipe in recipes %}
+        <div class="recipe-card mb-3">
+            <h4>{{ recipe.title }}</h4>
+            {% if recipe.image %}
+                <img src="{{ url_for('static', filename=recipe.image) }}" style="max-width:300px;">
+            {% endif %}
+            <p>{{ recipe.text }}</p>
+            <div>
+                <img src="{{ url_for('static', filename='img/plike.png') }}" class="icon">
+                {{ recipe.likes }}
+                <img src="{{ url_for('static', filename='img/plook.png') }}" class="icon">
+                {{ recipe.views }}
+            </div>
+            <a href="/recipe/{{ recipe.id }}" class="btn btn-custom-green mt-2">
+                Открыть
+            </a>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>Пока недостаточно данных для рекомендаций</p>
+{% endif %}
+{% endblock %}

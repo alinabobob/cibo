@@ -14,6 +14,11 @@
             <a href="/edit_profile" class="btn btn-custom-green mt-2">
                 Редактировать
             </a>
+            <a href="/chats" class="btn btn-custom-purple mt-2">Чаты</a>
+        {% else %}
+            <a href="/chat/{{ user.id }}" class="btn btn-custom-purple mt-2">
+                Написать
+            </a>
         {% endif %}
     </div>
     <div class="profile-right">
@@ -25,6 +30,11 @@
                     {% endif %}
                     <p style="font-size: 20px;">{{ recipe.title }}</p>
                     <p>{{ recipe.text }}</p>
+                    {% if current_user.is_authenticated and current_user.id == user.id %}
+                        <a href="/edit_recipe/{{ recipe.id }}" class="btn btn-sm btn-dark mt-2">
+                            Редактировать рецепт
+                        </a>
+                    {% endif %}
                 </div>
             {% endfor %}
         {% else %}
