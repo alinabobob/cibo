@@ -18,4 +18,6 @@ class Recipe(SqlAlchemyBase):
     type = sa.Column(sa.String, nullable=True)
     likes = sa.Column(sa.Integer, default=0)
     views = sa.Column(sa.Integer, default=0)
+    food_intake = sa.Column(sa.String, nullable=True)
+    manual = sa.Column(sa.String, nullable=True)
     user = relationship("User", back_populates="recipes")

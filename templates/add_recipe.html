@@ -29,10 +29,6 @@
         <input type="text" name="complexity" class="form-control">
     </p>
     <p>
-        Ингредиенты<br>
-        <textarea name="ingredients" class="form-control"></textarea>
-    </p>
-    <p>
         Время готовки(мин)<br>
         <input type="text" name="cooking_time" class="form-control">
     </p>
@@ -40,9 +36,20 @@
         Тип блюда<br>
         <input type="text" name="type" class="form-control">
     </p>
+        Тип приёма пищи<br>
+        <input type="text" name="food_intake" class="form-control">
+    </p>
+    <p>
+        Ингредиенты<br>
+        <textarea name="ingredients" class="form-control"></textarea>
+    </p>
     <p>
         Описание<br>
         <textarea name="text" class="form-control"></textarea>
+    </p>
+    <p>
+        Подробная инструкция<br>
+        <textarea name="manual" class="form-control"></textarea>
     </p>
     <button class="btn btn-custom-green">Добавить</button>
     {% if message %}

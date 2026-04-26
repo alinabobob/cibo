@@ -159,6 +159,42 @@ def search_recipes():
                            recipes=recipes)
 
 
+@app.route('/filter')
+def filter_recipes():
+    session = create_session()
+
+    query = session.query(Recipe)
+
+    category = request.args.get('category')
+    cuisine = request.args.get('cuisine')
+    food_intake = request.args.get('food_intake')
+    recipe_type = request.args.get('type')
+
+    time_min = request.args.get('time_min', type=int)
+    time_max = request.args.get('time_max', type=int)
+
+    if category:
+        query = query.filter(Recipe.category.ilike(f'%{category}%'))
+
+    if cuisine:
+        query = query.filter(Recipe.cuisine.ilike(f'%{cuisine}%'))
+
+    if food_intake:
+        query = query.filter(Recipe.food_intake.ilike(f'%{food_intake}%'))
+
+    if recipe_type:
+        query = query.filter(Recipe.type.ilike(f'%{recipe_type}%'))
+
+    if time_min is not None:
+        query = query.filter(Recipe.cooking_time >= time_min)
+
+    if time_max is not None:
+        query = query.filter(Recipe.cooking_time <= time_max)
+
+    recipes = query.all()
+    return render_template('filtered_recipes.html', recipes=recipes)
+
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -314,6 +350,8 @@ def add_recipe():
             recipe.cooking_time = request.form.get('cooking_time')
             recipe.type = request.form.get('type')
             recipe.text = request.form.get('text')
+            recipe.food_intake = request.form.get('food_intake')
+            recipe.manual = request.form.get('manual')
         except Exception as e:
             return render_template('add_recipe.html',
                                    message="Название или описание введёно некорректно")

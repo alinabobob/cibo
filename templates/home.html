@@ -48,57 +48,64 @@
             </header>
 
             <div class="text-center mb-3">
-                <button class="btn btn-primary" id="filter-toggle" aria-expanded="false">
-                    Фильтры ▼
-                </button>
-            </div>
-            <div id="filters-dropdown" class="collapse mb-4">
-                <div class="card card-body">
-                    <div class="row">
-                        <div class="col-md-3 mb-3">
-                            <h6>Кухня</h6>
-                            <select class="form-select" name="kitchen">
-                                <option selected>Выберите кухню</option>
-                                {% for kitchen in kitchens %}
-                                    <option>{{ kitchen }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h6>Время приготовления</h6>
-                            <select class="form-select">
-                                <option selected>Выберите время</option>
-                                <option>до 30 минут</option>
-                                <option>30-60 минут</option>
-                                <option>более 1 часа</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h6>Тип приема пищи</h6>
-                            <select class="form-select">
-                                <option selected>Выберите тип</option>
-                                <option>Завтрак</option>
-                                <option>Обед</option>
-                                <option>Ужин</option>
-                                <option>Десерт</option>
-                            </select>
-                        </div>
-                        <div class="col-md-3 mb-3">
-                            <h6>Тип блюда</h6>
-                            <select class="form-select">
-                                <option selected>Выберите тип блюда</option>
-                                <option>Суп</option>
-                                <option>Салат</option>
-                                <option>Основное блюдо</option>
-                                <option>Выпечка</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button class="btn btn-custom-green mt-2" type="button">Найти</button>
-                    </div>
-                </div>
-            </div>
+  <button class="btn btn-primary" id="filter-toggle" aria-expanded="false">
+    Фильтры ▼
+  </button>
+</div>
+<div id="filters-dropdown" class="collapse mb-4">
+  <form action="{{ url_for('filter_recipes') }}" method="GET" class="card card-body">
+    <div class="row">
+      <div class="col-md-3 mb-3">
+        <h6>Кухня</h6>
+        <select class="form-select" name="cuisine">
+          <option value="">Выберите кухню</option>
+          {% for kitchen in kitchens %}
+            <option value="{{ kitchen }}">{{ kitchen }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3 mb-3">
+        <h6>Время приготовления</h6>
+        <select class="form-select" name="cooking_time">
+          <option value="">Выберите время</option>
+          <option value="до 30 минут">до 30 минут</option>
+          <option value="30-60 минут">30-60 минут</option>
+          <option value="более 1 часа">более 1 часа</option>
+        </select>
+      </div>
+      <div class="col-md-3 mb-3">
+        <h6>Тип приема пищи</h6>
+        <select class="form-select" name="food_intake">
+          <option value="">Выберите тип</option>
+          <option value="Завтрак">Завтрак</option>
+          <option value="Обед">Обед</option>
+          <option value="Ужин">Ужин</option>
+          <option value="Полдник">Полдник</option>
+          <option value="Перекус">Перекус</option>
+        </select>
+      </div>
+      <div class="col-md-3 mb-3">
+        <h6>Тип блюда</h6>
+        <select class="form-select" name="type">
+          <option value="">Выберите тип блюда</option>
+          <option value="Первые блюда">Первые блюда</option>
+          <option value="Вторые блюда">Вторые блюда</option>
+          <option value="Салаты">Салаты</option>
+          <option value="Закуски">Закуски</option>
+          <option value="Выпечка">Выпечка</option>
+          <option value="Соусы">Соусы</option>
+          <option value="Заготовки">Заготовки</option>
+          <option value="Напитки">Напитки</option>
+          <option value="Десерты">Десерты</option>
+          <option value="Гарниры">Гарниры</option>
+        </select>
+      </div>
+    </div>
+    <div class="text-center mt-2">
+        <button class="btn btn-custom-green" type="submit">Найти</button>
+    </div>
+  </form>
+</div>
             <div class="container">
                 <div class="row g-4">
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
