@@ -17,6 +17,7 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sa.Column(sa.String, nullable=True)
     avatar = sa.Column(sa.String, nullable=True)
     subscribers = sa.Column(sa.Integer, default=0)
+    created_at = sa.Column(sa.DateTime, default=sa.func.now())
     recipes = relationship("Recipe", back_populates="user")
 
     def set_password(self, password):

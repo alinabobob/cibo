@@ -6,9 +6,11 @@ from data.db_session import create_session
 from data import db_session
 from PIL import Image
 from data.likes import Like
+from data.comments import Comment
 from data.views import View
 from data.messages import Message
-from sqlalchemy import or_
+from sqlalchemy import or_, and_
+from contextlib import contextmanager
 from data.subscriptions import Subscription
 import os
 import uuid
@@ -33,6 +35,19 @@ def get_recipes_by_category(category_name):
     session = create_session()
     recipes = session.query(Recipe).filter(Recipe.category.ilike(f'%{category_name}%')).all()
     return recipes, f"{category_name.capitalize()}"
+
+
+@contextmanager
+def session_scope():
+    session = create_session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
 
 
 @login_manager.user_loader
@@ -310,10 +325,11 @@ def chat(user_id):
         msg.text = request.form.get('text')
         session.add(msg)
         session.commit()
-    messages = session.query(Message).filter(((Message.sender_id == current_user.id) and
-                                              (Message.receiver_id == user_id)) |
-                                             ((Message.sender_id == user_id) &
-                                              (Message.receiver_id == current_user.id))).order_by(Message.created_at).all()
+    messages = (session.query(Message).filter(or_(and_(Message.sender_id == current_user.id,
+                                                      Message.receiver_id == user_id),
+                                                 and_(Message.sender_id == user_id,
+                                                      Message.receiver_id == current_user.id)))
+                .order_by(Message.created_at).all())
     user = session.get(User, user_id)
     return render_template('chat.html', messages=messages, user=user)
 
@@ -380,11 +396,12 @@ def recipe_page(recipe_id):
         return "Рецепт не найден"
     recipe.views += 1
     if current_user.is_authenticated:
-        view = View(user_id=current_user.id,
-                    recipe_id=recipe_id)
+        view = View(user_id=current_user.id, recipe_id=recipe_id)
         session.add(view)
+    comments = session.query(Comment).filter(Comment.recipe_id == recipe_id).order_by(Comment.created_at).all()
+    comment_tree = build_com(comments)
     session.commit()
-    return render_template('recipe.html', recipe=recipe)
+    return render_template('recipe.html', recipe=recipe, comments_tree=comment_tree)
 
 
 @app.route('/recipes/breakfast')
@@ -563,6 +580,42 @@ def advice():
                key=lambda r: score.get(r.id, 0),
                reverse=True)
     return render_template("advice.html", recipes=n[:20])
+
+
+def build_com(comments):
+    n = {}
+    for i in comments:
+        n[i.id] = {"comment": i, "children": []}
+    nn = []
+    for i in comments:
+        if i.parent_id:
+            if i.parent_id in n:
+                n[i.parent_id]["children"].append(n[i.id])
+        else:
+            nn.append(n[i.id])
+    return nn
+
+
+@app.template_filter('datetime')
+def format_datetime(value):
+    if not value:
+        return ""
+    return value.strftime('%d.%m.%Y %H:%M')
+
+
+@app.route('/comment/<int:recipe_id>', methods=['POST'])
+@login_required
+def add_comment(recipe_id):
+    session = create_session()
+    text = request.form.get('text')
+    u = request.form.get('parent_id')
+    if not text:
+        return redirect(f'/recipe/{recipe_id}')
+    c = Comment(user_id=current_user.id, recipe_id=recipe_id, text=text,
+                      parent_id=u if u else None)
+    session.add(c)
+    session.commit()
+    return redirect(f'/recipe/{recipe_id}')
 
 
 if __name__ == '__main__':

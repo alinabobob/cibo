@@ -26,6 +26,8 @@
                 <h5>Приготовление</h5>
                 <p class="card-text">{{ recipe.text }}</p>
 
+                <p class="text-muted small">Создан: {{ recipe.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
+
                 <div class="d-flex justify-content-between align-items-center mt-4">
                     <span class="badge" style="background-color: #827887; color: white;">
                         Время: {{ recipe.cooking_time }} мин.
@@ -40,5 +42,61 @@
             </div>
         </div>
     </div>
+    <h3 class="mt-5">Комментарии</h3>
+    {% if current_user.is_authenticated %}
+    <form method="post" action="/comment/{{ recipe.id }}">
+        <textarea name="text" class="form-control mb-2" placeholder="Написать комментарий"></textarea>
+        <button class="btn btn-custom-green">Отправить</button>
+    </form>
+    {% endif %}
+    <hr>
+    {% macro render_comment(node, level=0) %}
+        {% set comment = node.comment %}
+        <div class="comment-box" style="margin-left: {{ level * 20 }}px;">
+            <div class="comment-header">
+                <img src="{{ url_for('static', filename=comment.user.avatar or 'img/base_av.png') }}"
+                     class="comment-avatar">
+                <b>{{ comment.user.username }}</b>
+                <span class="comment-date">{{ comment.created_at.strftime('%d.%m.%Y %H:%M') }}</span>
+                {% if comment.parent %}
+                    <span class="reply-to">
+                        → ответ пользователю {{ comment.parent.user.username }}
+                    </span>
+                {% endif %}
+            </div>
+            <p>{{ comment.text }}</p>
+            {% if current_user.is_authenticated %}
+            <form method="post" action="/comment/{{ recipe.id }}">
+                <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                <input type="text" name="text" class="form-control mb-1"
+                       placeholder="Ответить">
+            </form>
+            {% endif %}
+            {% if node.children %}
+                <button onclick="toggleReplies({{ comment.id }})"
+                        class="btn btn-sm btn-light">
+                    Показать ответы ({{ node.children|length }})
+                </button>
+                <div id="replies-{{ comment.id }}" style="display:none;">
+                    {% for child in node.children %}
+                        {{ render_comment(child, level + 1) }}
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    {% endmacro %}
+    {% for node in comments_tree %}
+        {{ render_comment(node) }}
+    {% endfor %}
 </div>
+<script>
+function toggleReplies(id) {
+    const el = document.getElementById("replies-" + id);
+    if (el.style.display === "none") {
+        el.style.display = "block";
+    } else {
+        el.style.display = "none";
+    }
+}
+</script>
 {% endblock %}

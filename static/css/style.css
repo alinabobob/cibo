@@ -361,3 +361,34 @@ header h4 {
     display: flex;
     gap: 10px;
 }
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.comment-avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #7d8778;
+}
+.reply-to {
+    color: #777;
+    font-size: 12px;
+}
+.comment-box {
+    background: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+.comment-date {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+.message-time {
+    font-size: 10px;
+    color: #999;
+}

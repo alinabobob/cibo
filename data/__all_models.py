@@ -4,3 +4,4 @@ from . import likes
 from . import subscriptions
 from . import views
 from . import messages
+from . import comments

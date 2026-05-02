@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<a href="{{ request.referrer or '/' }}" class="btn btn-secondary">← Назад</a>
 <div class="profile-container">
     <div class="profile-left">
         <img src="{{ url_for('static', filename=user.avatar or 'img/base_av.png') }}"
@@ -10,6 +11,7 @@
         <p><b>Email:</b> {{ user.email }}</p>
         <p><b>Age:</b> {{ user.age }}</p>
         <p><b>Description:</b> {{ user.description }}</p>
+        <p><b>На сайте с:</b> {{ user.created_at.strftime('%d.%m.%Y') }}</p>
         {% if current_user.is_authenticated and current_user.id == user.id %}
             <a href="/edit_profile" class="btn btn-custom-green mt-2">
                 Редактировать
