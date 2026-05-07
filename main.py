@@ -12,6 +12,7 @@ from data.messages import Message
 from sqlalchemy import or_, and_
 from contextlib import contextmanager
 from data.subscriptions import Subscription
+from flask import flash, redirect, url_for
 import os
 import uuid
 
@@ -388,6 +389,28 @@ def add_recipe():
     return render_template('add_recipe.html')
 
 
+@app.route('/delete_recipe/<int:recipe_id>', methods=['GET', 'POST'])
+@login_required
+def delete_recipe(recipe_id):
+    session = create_session()
+    recipe = session.get(Recipe, recipe_id)
+    if not recipe or recipe.user_id != current_user.id:
+        return redirect('/')
+
+    if request.method == 'POST':
+
+        if recipe.image:
+            try:
+                os.remove(os.path.join('static', recipe.image))
+            except:
+                pass
+        session.delete(recipe)
+        session.commit()
+        return redirect(f'/profile/{current_user.id}')
+
+    return render_template('delete_recipe.html', recipe=recipe)
+
+
 @app.route('/recipe/<int:recipe_id>')
 def recipe_page(recipe_id):
     session = create_session()
@@ -499,20 +522,84 @@ def like(recipe_id):
 @login_required
 def subscribe(user_id):
     session = create_session()
+
     user = session.get(User, user_id)
+
     if not user:
         return redirect('/')
+
     if user.id == current_user.id:
         return redirect(request.referrer or '/')
-    existing = session.query(Subscription).filter(Subscription.follower_id == current_user.id,
-                                                  Subscription.followed_id == user_id).first()
-    if existing:
+
+    existing_subscription = session.query(Subscription).filter(
+        Subscription.follower_id == current_user.id,
+        Subscription.followed_id == user_id
+    ).first()
+
+    if existing_subscription:
         return redirect(request.referrer or '/')
-    sub = Subscription(follower_id=current_user.id, followed_id=user_id)
-    session.add(sub)
+
+    new_subscription = Subscription(
+        follower_id=current_user.id,
+        followed_id=user.id
+    )
+
     user.subscribers += 1
+
+    session.add(new_subscription)
     session.commit()
-    return redirect(request.referrer or '/')
+
+    return render_template('subscription_success.html', user=user)
+
+
+@app.route('/subscribers/<int:user_id>')
+@login_required
+def subscribers(user_id):
+    session = create_session()
+    user = session.get(User, user_id)
+    if not user:
+        return "Пользователь не найден"
+
+    subscriptions = session.query(Subscription).filter(Subscription.followed_id == user_id).all()
+
+    followers = [session.get(User, sub.follower_id) for sub in subscriptions]
+
+    return render_template('subscribers.html', user=user, followers=followers)
+
+
+@app.route('/subscriptions')
+@login_required
+def subscriptions():
+    session = create_session()
+    subs = session.query(Subscription).filter(Subscription.follower_id == current_user.id).all()
+    followed_users = [session.get(User, sub.followed_id) for sub in subs]
+    return render_template('subscriptions.html', users=followed_users)
+
+
+@app.route('/unsubscribe/<int:user_id>')
+@login_required
+def unsubscribe(user_id):
+    session = create_session()
+    sub = session.query(Subscription).filter(
+        Subscription.follower_id == current_user.id,
+        Subscription.followed_id == user_id
+    ).first()
+
+    if sub:
+        followed_user = session.get(User, user_id)
+        followed_user.subscribers -= 1
+        session.delete(sub)
+        session.commit()
+
+        return render_template('unsubscribe_success.html', user=followed_user)
+
+    return redirect(url_for('subscriptions'))
+
+
+@app.route('/unsubscribe/confirm/<int:user_id>')
+@login_required
+def unsubscribe_confirm(user_id):
+    return render_template('unsubscribe_confirm.html', user_id=user_id)
 
 
 @app.route('/advice')

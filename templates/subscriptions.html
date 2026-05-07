@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% if followers is defined %}
+    <h2>Подписчики {{ user.name }}</h2>
+
+    {% if followers %}
+      <ul style="list-style: none; padding: 0;">
+        {% for follower in followers %}
+          <li style="margin-bottom: 15px; display: flex; align-items: center;">
+            <img src="{{ url_for('static', filename=follower.avatar or 'img/base_av.png') }}"
+                 alt="Аватар"
+                 style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+            <a href="{{ url_for('profile', user_id=follower.id) }}"
+               style="text-decoration: none; color: inherit; font-size: 16px; font-weight: 500;">
+              {{ follower.username }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>У этого пользователя пока нет подписчиков.</p>
+    {% endif %}
+
+  {% else %}
+    <a href="{{ url_for('profile', user_id=current_user.id) }}" class="btn btn-secondary" style="margin-bottom: 15px;">← Назад</a>
+    <h2>Мои подписки</h2>
+
+    {% if users %}
+      <ul style="list-style: none; padding: 0;">
+        {% for user in users %}
+          <li style="margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between;">
+            <div style="display: flex; align-items: center;">
+              <img src="{{ url_for('static', filename=user.avatar or 'img/base_av.png') }}"
+                   alt="Аватар"
+                   style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+              <a href="{{ url_for('profile', user_id=user.id) }}"
+                 style="text-decoration: none; color: inherit; font-size: 16px; font-weight: 500;">
+                {{ user.username }}
+              </a>
+            </div>
+            <a href="{{ url_for('unsubscribe_confirm', user_id=user.id) }}"
+               class="btn btn-custom-purple"
+               style="font-size: 14px; padding: 5px 12px; margin-left: auto;">
+              Отписаться
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Вы пока ни на кого не подписаны.</p>
+    {% endif %}
+  {% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Подписчики {{ user.name }}</h2>
+
+{% if followers %}
+    <ul style="list-style: none; padding: 0;">
+        {% for follower in followers %}
+            <li style="margin-bottom: 15px; display: flex; align-items: center;">
+                <img src="{{ url_for('static', filename=follower.avatar or 'img/base_av.png') }}"
+                     alt="Аватар"
+                     style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; margin-right: 12px;">
+                <a href="{{ url_for('profile', user_id=follower.id) }}"
+                   style="text-decoration: none; color: inherit; font-size: 16px; font-weight: 500;">
+                    {{ follower.username }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>У этого пользователя пока нет подписчиков.</p>
+{% endif %}
+{% endblock %}

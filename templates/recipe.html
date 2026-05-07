@@ -6,6 +6,28 @@
 
     <h1 class="mb-4">{{ recipe.title }}</h1>
 
+    <!-- Блок с автором рецепта -->
+    <div class="d-flex align-items-center mb-4">
+        <a href="{{ url_for('profile', user_id=recipe.user.id) }}">
+            <img src="{{ url_for('static', filename=recipe.user.avatar or 'img/base_av.png') }}"
+                 alt="{{ recipe.user.username }}"
+                 class="rounded-circle me-3"
+                 style="width: 40px; height: 40px; object-fit: cover;">
+        </a>
+        <div>
+            <a href="{{ url_for('profile', user_id=recipe.user.id) }}"
+               class="text-decoration-none text-dark">
+                <b>{{ recipe.user.username }}</b>
+            </a>
+            <p class="text-muted small mb-0">
+                {{ recipe.user.name }}
+                {% if recipe.user.description %}
+                    — {{ recipe.user.description }}
+                {% endif %}
+            </p>
+        </div>
+    </div>
+
     <div class="row g-4">
         <div class="col-md-4 text-center">
             <img src="{{ url_for('static', filename=recipe.image) }}"
@@ -23,7 +45,7 @@
                 <h5>Ингредиенты</h5>
                 <p class="card-text">{{ recipe.ingredients }}</p>
 
-                <h5>Приготовление</h5>
+                <h5>Описание</h5>
                 <p class="card-text">{{ recipe.text }}</p>
 
                 <p class="text-muted small">Создан: {{ recipe.created_at.strftime('%d.%m.%Y %H:%M') }}</p>
@@ -42,6 +64,16 @@
             </div>
         </div>
     </div>
+    {% if recipe.manual %}
+<div class="row g-4 mt-5">
+    <div class="col-12">
+        <div class="card p-4 shadow-sm">
+            <h5>Подробная инструкция</h5>
+            <p class="card-text">{{ recipe.manual }}</p>
+        </div>
+    </div>
+</div>
+{% endif %}
     <h3 class="mt-5">Комментарии</h3>
     {% if current_user.is_authenticated %}
     <form method="post" action="/comment/{{ recipe.id }}">

@@ -12,11 +12,26 @@
         <p><b>Age:</b> {{ user.age }}</p>
         <p><b>Description:</b> {{ user.description }}</p>
         <p><b>На сайте с:</b> {{ user.created_at.strftime('%d.%m.%Y') }}</p>
+        <p>
+            <b>
+                {% if user.subscribers > 0 %}
+                    <a href="{{ url_for('subscribers', user_id=user.id) }}"
+                       style="text-decoration: none; color: inherit;">
+                       Subscribers: {{ user.subscribers }}
+                    </a>
+                {% else %}
+                    Subscribers: {{ user.subscribers }}
+                {% endif %}
+            </b>
+        </p>
         {% if current_user.is_authenticated and current_user.id == user.id %}
             <a href="/edit_profile" class="btn btn-custom-green mt-2">
                 Редактировать
             </a>
             <a href="/chats" class="btn btn-custom-purple mt-2">Чаты</a>
+            <a href="/subscriptions" class="btn btn-sm btn-dark mt-2">
+                Мои подписки
+            </a>
         {% else %}
             <a href="/chat/{{ user.id }}" class="btn btn-custom-purple mt-2">
                 Написать
@@ -35,6 +50,9 @@
                     {% if current_user.is_authenticated and current_user.id == user.id %}
                         <a href="/edit_recipe/{{ recipe.id }}" class="btn btn-sm btn-dark mt-2">
                             Редактировать рецепт
+                        </a>
+                        <a href="/delete_recipe/{{ recipe.id }}" class="btn btn-sm btn-dark mt-2">
+                            Удалить рецепт
                         </a>
                     {% endif %}
                 </div>
