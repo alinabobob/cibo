@@ -1,0 +1,3 @@
+[deployment]
+run = "bash ./python-app/start.sh"
+build = ""
