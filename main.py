@@ -157,7 +157,9 @@ def home():
                    "Якутская",
                    "Японская"
             ]
-    return render_template('home.html', kitchens=kitchens)
+    session = create_session()
+    recipes = session.query(Recipe).order_by(Recipe.created_at.desc()).limit(12).all()
+    return render_template('home.html', kitchens=kitchens, recipes=recipes)
 
 
 @app.route('/search')
@@ -173,7 +175,7 @@ def search_recipes():
             (Recipe.text.ilike(f'%{query}%'))
         ).all()
 
-    return render_template('category_recipes.html',
+    return render_template('search.html',
                            recipes=recipes)
 
 
@@ -718,5 +720,5 @@ def add_comment(recipe_id):
 
 if __name__ == '__main__':
     db_session.global_init("db/cibo.sqlite")
-#    app.run(port=8080, host='127.0.0.1')
-    serve(app, host='127.0.0.1', port=8080)
+    app.run(port=8080, host='127.0.0.1')
+    #serve(app, host='127.0.0.1', port=8080)

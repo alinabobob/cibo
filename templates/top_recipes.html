@@ -24,9 +24,11 @@
                 <img src="{{ url_for('static', filename='img/like.png') }}" class="icon">
                    Лайк
             </a>
-            <a href="/subscribe/{{ recipe.user_id }}" class="btn btn-custom-purple w-100">
+            <button class="btn btn-custom-purple w-100 subscribe-btn"
+                    data-user-id="{{ recipe.user_id }}"
+                    data-url="{{ url_for('subscribe', user_id=recipe.user_id) }}">
                 Подписаться
-            </a>
+            </button>
         {% endif %}
     </div>
 </div>

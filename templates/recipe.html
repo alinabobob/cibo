@@ -6,7 +6,6 @@
 
     <h1 class="mb-4">{{ recipe.title }}</h1>
 
-    <!-- Блок с автором рецепта -->
     <div class="d-flex align-items-center mb-4">
         <a href="{{ url_for('profile', user_id=recipe.user.id) }}">
             <img src="{{ url_for('static', filename=recipe.user.avatar or 'img/base_av.png') }}"
@@ -19,12 +18,6 @@
                class="text-decoration-none text-dark">
                 <b>{{ recipe.user.username }}</b>
             </a>
-            <p class="text-muted small mb-0">
-                {{ recipe.user.name }}
-                {% if recipe.user.description %}
-                    — {{ recipe.user.description }}
-                {% endif %}
-            </p>
         </div>
     </div>
 

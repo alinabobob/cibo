@@ -37,5 +37,81 @@
 <main role="main" class="container">
     {% block content %}{% endblock %}
 </main>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 </html>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // --- ПОДПИСКА (осталось как было) ---
+  const subscribeButtons = document.querySelectorAll('.subscribe-btn');
+  subscribeButtons.forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      const url = button.getAttribute('data-url');
+      fetch(url)
+        .then(response => {
+          if (!response.ok) throw new Error('Ошибка подписки');
+          return response.text();
+        })
+        .then(() => {
+          Swal.fire({
+            title: 'Успех!',
+            text: 'Вы успешно подписались.',
+            icon: 'success',
+            timer: 1500,
+            showConfirmButton: false
+          });
+          button.textContent = 'Подписан ✅';
+          button.disabled = true;
+          button.classList.remove('btn-outline-primary');
+          button.classList.add('btn-success');
+        })
+        .catch(error => Swal.fire('Ошибка', error.message, 'error'));
+    });
+  });
+
+  // --- НОВАЯ ЧАСТЬ: ОТПИСКА ---
+  const unsubscribeButtons = document.querySelectorAll('.unsubscribe-btn');
+  unsubscribeButtons.forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.preventDefault(); // Останавливаем переход по ссылке
+
+      const url = button.getAttribute('data-url');
+
+      // Запрашиваем подтверждение перед действием (опционально, но полезно)
+      Swal.fire({
+        title: 'Вы уверены?',
+        text: "Вы хотите отписаться от этого пользователя?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#7d8778',
+        cancelButtonColor: '#827887',
+        confirmButtonText: 'Да, отписаться!'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Если пользователь подтвердил, отправляем запрос на сервер
+          fetch(url)
+            .then(response => {
+              if (!response.ok) throw new Error('Ошибка при отписке');
+              return response.text();
+            })
+            .then(() => {
+              // Если успешно - показываем уведомление и убираем строку из списка
+              Swal.fire({
+                title: 'Готово!',
+                text: 'Вы успешно отписались.',
+                icon: 'success',
+                timer: 1500,
+                showConfirmButton: false
+              });
+              // Удаляем весь блок <li> с этим пользователем со страницы
+              button.closest('li').remove();
+            })
+            .catch(error => Swal.fire('Ошибка', error.message, 'error'));
+        }
+      });
+    });
+  });
+});
+</script>

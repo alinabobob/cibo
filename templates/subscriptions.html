@@ -39,11 +39,11 @@
                 {{ user.username }}
               </a>
             </div>
-            <a href="{{ url_for('unsubscribe_confirm', user_id=user.id) }}"
-               class="btn btn-custom-purple"
-               style="font-size: 14px; padding: 5px 12px; margin-left: auto;">
-              Отписаться
-            </a>
+            <button class="btn btn-custom-purple unsubscribe-btn"
+                    data-user-id="{{ user.id }}"
+                    data-url="{{ url_for('unsubscribe', user_id=user.id) }}">
+               Отписаться
+            </button>
           </li>
         {% endfor %}
       </ul>
