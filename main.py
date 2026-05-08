@@ -9,12 +9,14 @@ from data.likes import Like
 from data.comments import Comment
 from data.views import View
 from data.messages import Message
+from flask import jsonify
 from sqlalchemy import or_, and_
 from contextlib import contextmanager
 from data.subscriptions import Subscription
 from flask import flash, redirect, url_for
 import os
 import uuid
+from waitress import serve
 
 
 app = Flask(__name__)
@@ -464,6 +466,15 @@ def all_recipes():
     return render_template('all_recipes.html', recipes=recipes)
 
 
+@app.route('/api/recipes')
+def api_recipes():
+    session = create_session()
+    recipes = session.query(Recipe).all()
+    return jsonify([{"id": r.id,
+                     "title": r.title,
+                     "author": r.user.name} for r in recipes])
+
+
 @app.route('/recipes/top')
 def top_recipes():
     session = create_session()
@@ -707,4 +718,5 @@ def add_comment(recipe_id):
 
 if __name__ == '__main__':
     db_session.global_init("db/cibo.sqlite")
-    app.run(port=8080, host='127.0.0.1')
+#    app.run(port=8080, host='127.0.0.1')
+    serve(app, host='127.0.0.1', port=8080)
