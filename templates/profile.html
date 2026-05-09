@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{{ request.referrer or '/' }}" class="btn btn-secondary">← Назад</a>
+<a href="{{'/'}}" class="btn btn-secondary">← Назад</a>
 <div class="profile-container">
     <div class="profile-left">
         <img src="{{ url_for('static', filename=user.avatar or 'img/base_av.png') }}"
