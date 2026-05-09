@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, jsonify, flash, redirect, url_for
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from data.user import User
 from data.recipes import Recipe
@@ -9,11 +9,9 @@ from data.likes import Like
 from data.comments import Comment
 from data.views import View
 from data.messages import Message
-from flask import jsonify
 from sqlalchemy import or_, and_
 from contextlib import contextmanager
 from data.subscriptions import Subscription
-from flask import flash, redirect, url_for
 import os
 import uuid
 from search_index import build_index, search, add_recipe_to_index, add_user_to_index
