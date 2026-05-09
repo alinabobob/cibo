@@ -37,8 +37,8 @@
 
         <main class="col-md-9 col-lg-10 ps-md-3">
             <form action="{{ url_for('search_recipes') }}" method="GET" class="input-group mb-3">
-                <input type="text" name="query" class="form-control" placeholder="Поиск рецептов..."
-                       aria-label="Поиск рецептов..." value="{{ request.args.get('query', '') }}">
+                <input type="text" name="query" class="form-control" placeholder="Поиск..."
+                       aria-label="Поиск..." value="{{ request.args.get('query', '') }}">
                 <button class="btn btn-custom-purple" type="submit">Найти</button>
             </form>
 
@@ -109,45 +109,45 @@
 <div class="container py-5">
   <div class="row g-4">
     {% for recipe in recipes %}
-    <div class="col-12 d-flex justify-content-center">
-      <div class="card h-100 shadow-sm w-75">
-        <div class="card-header d-flex align-items-center p-3 border-0 justify-content-between">
-  <div class="d-flex align-items-center">
-    <img src="{{ url_for('static', filename=recipe.user.avatar if recipe.user.avatar else 'img/base_av.png') }}"
-         class="rounded-circle me-3"
-         style="width: 45px; height: 45px; object-fit: cover;"
-         alt="Аватар автора">
-    <a href="{{ url_for('profile', user_id=recipe.user.id) }}"
-       class="text-decoration-none text-dark me-2">
-       <strong>{{ recipe.user.username }}</strong>
-    </a>
-  </div>
- <button class="btn btn-custom-purple btn-sm subscribe-btn"
-        data-user-id="{{ recipe.user.id }}"
-        data-url="{{ url_for('subscribe', user_id=recipe.user.id) }}">
-    Подписаться
-</button>
-</div>
+      <div class="col-12 d-flex justify-content-center">
+        <div class="card h-100 shadow-sm w-75">
+          <div class="card-header d-flex align-items-center p-3 border-0 justify-content-between">
+            <div class="d-flex align-items-center">
+              <img src="{{ url_for('static', filename=recipe.user.avatar if recipe.user.avatar else 'img/base_av.png') }}"
+                   class="rounded-circle me-3"
+                   style="width: 45px; height: 45px; object-fit: cover;"
+                   alt="Аватар автора">
+              <a href="{{ url_for('profile', user_id=recipe.user.id) }}"
+                 class="text-decoration-none text-dark me-2">
+                <strong>{{ recipe.user.username }}</strong>
+              </a>
+            </div>
+            <button class="btn btn-custom-purple btn-sm subscribe-btn"
+                    data-user-id="{{ recipe.user.id }}"
+                    data-url="{{ url_for('subscribe', user_id=recipe.user.id) }}">
+              Подписаться
+            </button>
+          </div>
 
-        <div class="recipe-image-container text-center p-3">
-          <img src="{{ url_for('static', filename=recipe.image if recipe.image else 'img/placeholder.jpg') }}"
-               class="img-fluid rounded"
-               style="max-height: 200px; object-fit: cover;"
-               alt="{{ recipe.title }}">
-        </div>
+          <div class="recipe-image-container text-center p-3">
+            <img src="{{ url_for('static', filename=recipe.image if recipe.image else 'img/placeholder.jpg') }}"
+                 class="img-fluid rounded"
+                 style="max-height: 200px; object-fit: cover;"
+                 alt="{{ recipe.title }}">
+          </div>
 
-        <div class="card-body d-flex flex-column">
-          <h5 class="card-title text-truncate mb-2">{{ recipe.title }}</h5>
-          <p class="card-text flex-grow-1 small text-muted">
-            {{ recipe.text[:150] + '...' if recipe.text else 'Описание отсутствует.' }}
-          </p>
-          <a href="{{ url_for('recipe_page', recipe_id=recipe.id) }}"
-             class="btn btn-custom-green mt-auto w-100">
-            Посмотреть рецепт
-          </a>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-truncate mb-2">{{ recipe.title }}</h5>
+            <p class="card-text flex-grow-1 small text-muted">
+              {{ recipe.text[:150] + '...' if recipe.text else 'Описание отсутствует.' }}
+            </p>
+            <a href="{{ url_for('recipe_page', recipe_id=recipe.id) }}"
+               class="btn btn-custom-green mt-auto w-100">
+              Посмотреть рецепт
+            </a>
+          </div>
         </div>
       </div>
-    </div>
     {% endfor %}
   </div>
 </div>
@@ -155,27 +155,23 @@
     </div>
 </div>
 <script>
-    // JavaScript для переключения меню фильтров
     document.getElementById('filter-toggle').addEventListener('click', function() {
         var filtersDropdown = document.getElementById('filters-dropdown');
         var filterButton = this;
 
-        // Используем Bootstrap's Collapse component's API (если Bootstrap JS подключен)
-        // Или ручное переключение класса 'show'
         var isShow = filtersDropdown.classList.contains('show');
 
         if (isShow) {
             filtersDropdown.classList.remove('show');
             filterButton.setAttribute('aria-expanded', 'false');
-            filterButton.innerHTML = 'Фильтры ▼'; // Восстанавливаем текст кнопки
+            filterButton.innerHTML = 'Фильтры ▼';
         } else {
             filtersDropdown.classList.add('show');
             filterButton.setAttribute('aria-expanded', 'true');
-            filterButton.innerHTML = 'Фильтры ▲'; // Меняем текст кнопки
+            filterButton.innerHTML = 'Фильтры ▲';
         }
     });
 
-    //JavaScript для стилизации активной кнопки категории (опционально)
     document.querySelectorAll('.category-button').forEach(button => {
         button.addEventListener('click', function() {
             document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));

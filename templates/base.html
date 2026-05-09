@@ -43,7 +43,6 @@
 </html>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  // --- ПОДПИСКА (осталось как было) ---
   const subscribeButtons = document.querySelectorAll('.subscribe-btn');
   subscribeButtons.forEach(function (button) {
     button.addEventListener('click', function (event) {
@@ -71,15 +70,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  // --- НОВАЯ ЧАСТЬ: ОТПИСКА ---
   const unsubscribeButtons = document.querySelectorAll('.unsubscribe-btn');
   unsubscribeButtons.forEach(function (button) {
     button.addEventListener('click', function (event) {
-      event.preventDefault(); // Останавливаем переход по ссылке
+      event.preventDefault();
 
       const url = button.getAttribute('data-url');
 
-      // Запрашиваем подтверждение перед действием (опционально, но полезно)
       Swal.fire({
         title: 'Вы уверены?',
         text: "Вы хотите отписаться от этого пользователя?",
@@ -90,14 +87,12 @@ document.addEventListener('DOMContentLoaded', function () {
         confirmButtonText: 'Да, отписаться!'
       }).then((result) => {
         if (result.isConfirmed) {
-          // Если пользователь подтвердил, отправляем запрос на сервер
           fetch(url)
             .then(response => {
               if (!response.ok) throw new Error('Ошибка при отписке');
               return response.text();
             })
             .then(() => {
-              // Если успешно - показываем уведомление и убираем строку из списка
               Swal.fire({
                 title: 'Готово!',
                 text: 'Вы успешно отписались.',
@@ -105,7 +100,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 timer: 1500,
                 showConfirmButton: false
               });
-              // Удаляем весь блок <li> с этим пользователем со страницы
               button.closest('li').remove();
             })
             .catch(error => Swal.fire('Ошибка', error.message, 'error'));

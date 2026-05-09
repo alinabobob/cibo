@@ -16,6 +16,7 @@ from data.subscriptions import Subscription
 from flask import flash, redirect, url_for
 import os
 import uuid
+from search_index import build_index, search, add_recipe_to_index, add_user_to_index
 from waitress import serve
 
 
@@ -166,17 +167,42 @@ def home():
 def search_recipes():
     query = request.args.get('query')
 
+    if not query:
+        return render_template('search.html', recipes=[], users=[], query="")
+
+    recipes_ids, users_ids = search(query)
+
     session = create_session()
-    recipes = []
 
-    if query:
-        recipes = session.query(Recipe).filter(
-            (Recipe.title.ilike(f'%{query}%')) |
-            (Recipe.text.ilike(f'%{query}%'))
-        ).all()
+    found_recipes = []
+    found_users = []
 
-    return render_template('search.html',
-                           recipes=recipes)
+    if recipes_ids:
+        db_recipes = session.query(Recipe).filter(Recipe.id.in_(recipes_ids)).all()
+
+        recipes_sorted = []
+        for rid in recipes_ids:
+            for rec in db_recipes:
+                if str(rec.id) == rid:
+                    recipes_sorted.append(rec)
+                    break
+        found_recipes = recipes_sorted
+
+    if users_ids:
+        db_users = session.query(User).filter(User.id.in_(users_ids)).all()
+
+        users_sorted = []
+        for uid in users_ids:
+            for user in db_users:
+                if str(user.id) == uid:
+                    users_sorted.append(user)
+                    break
+        found_users = users_sorted
+
+    if found_users and not found_recipes:
+        return render_template('users_search.html', users=found_users, query=query)
+
+    return render_template('search.html', recipes=found_recipes, users=found_users, query=query)
 
 
 @app.route('/filter')
@@ -284,6 +310,7 @@ def register():
                                    message="Пароль введён некорректно")
         session.add(user)
         session.commit()
+        add_user_to_index(user)
         return redirect('/login')
     return render_template('register.html')
 
@@ -315,6 +342,7 @@ def edit_profile():
             f.save(os.path.join('static', path))
             user.avatar = path
         session.commit()
+        add_user_to_index(user)
         return redirect(f'/profile/{user.id}')
     return render_template('edit_profile.html', user=user)
 
@@ -389,6 +417,8 @@ def add_recipe():
                                    message="Неизвестное расширение файла")
         session.add(recipe)
         session.commit()
+        add_recipe_to_index(recipe)
+
         return redirect(f'/profile/{current_user.id}')
     return render_template('add_recipe.html')
 
@@ -507,6 +537,7 @@ def edit_recipe(recipe_id):
             process_image(f, full_path)
             recipe.image = path
         session.commit()
+        add_recipe_to_index(recipe)
         return redirect(f'/profile/{current_user.id}')
     return render_template('edit_recipe.html', recipe=recipe)
 
@@ -720,5 +751,6 @@ def add_comment(recipe_id):
 
 if __name__ == '__main__':
     db_session.global_init("db/cibo.sqlite")
+    build_index()
     app.run(port=8080, host='127.0.0.1')
     #serve(app, host='127.0.0.1', port=8080)
