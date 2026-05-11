@@ -9,7 +9,8 @@
           crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Playfair+Display&display=swap" rel="stylesheet">
-    <title>{{ title }}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='img/icon.png') }}" type="image/x-icon">
+    <title>{% block title %}Cibo{% endblock %}</title>
 </head>
 <body>
 <header>

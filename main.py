@@ -15,6 +15,7 @@ from data.subscriptions import Subscription
 import os
 import uuid
 from search_index import build_index, search, add_recipe_to_index, add_user_to_index
+from flask import send_from_directory
 from waitress import serve
 
 
@@ -56,6 +57,12 @@ def session_scope():
 def load_user(user_id):
     session = create_session()
     return session.get(User, user_id)
+
+
+@app.route('/icon.png')
+def icon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'icon.png', mimetype='image/vnd.microsoft.icon')
 
 
 @app.route('/')
