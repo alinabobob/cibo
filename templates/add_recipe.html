@@ -12,54 +12,191 @@
         <input type="file" name="image" id="image-input" hidden>
     </div>
     <img id="preview" style="max-width:100%; display:none;">
-    <p>
-        Название<br>
+    <div class="form-group">
+        <span class="tooltip-trigger">Название</span> <span class="emoji">🌸</span>
         <input type="text" name="title" class="form-control">
-    </p>
-    <p>
-        Категория<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Категория</span> <span class="emoji">🌸</span>
         <input type="text" name="category" class="form-control">
-    </p>
-    <p>
-        Кухня<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Кухня</span> <span class="emoji">🌸</span>
         <input type="text" name="cuisine" class="form-control">
-    </p>
-    <p>
-        Сложность<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Сложность</span> <span class="emoji">🌸</span>
         <input type="text" name="complexity" class="form-control">
-    </p>
-    <p>
-        Время готовки(мин)<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Время готовки (мин)</span> <span class="emoji">🌸</span>
         <input type="text" name="cooking_time" class="form-control">
-    </p>
-    <p>
-        Тип блюда<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Тип блюда</span> <span class="emoji">🌸</span>
         <input type="text" name="type" class="form-control">
-    </p>
-        Тип приёма пищи<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Тип приёма пищи</span> <span class="emoji">🌸</span>
         <input type="text" name="food_intake" class="form-control">
-    </p>
-    <p>
-        Ингредиенты<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Ингредиенты</span> <span class="emoji">🌸</span>
         <textarea name="ingredients" class="form-control"></textarea>
-    </p>
-    <p>
-        Описание<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Описание</span> <span class="emoji">🌸</span>
         <textarea name="text" class="form-control"></textarea>
-    </p>
-    <p>
-        Подробная инструкция<br>
+    </div>
+    <div class="form-group">
+        <span class="tooltip-trigger">Подробная инструкция</span> <span class="emoji">🌸</span>
         <textarea name="manual" class="form-control"></textarea>
-    </p>
-    <button class="btn btn-custom-green">Добавить</button>
+    </div>
+
+    <button id="add-recipe-btn" class='btn btn-custom-green'>Добавить</button>
+
     {% if message %}
-        <div class="alert alert-danger">{{ message }}</div>
+      <div class='alert alert-danger'>{{ message }}</div>
     {% endif %}
 </form>
+
+<div id='tooltip-box-template' style='
+  display: none;
+  position: absolute;
+  padding: 10px;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  z-index: 1000;
+  max-width: 350px;
+  word-wrap: break-word;
+'></div>
+
+<style>
+.form-group {
+  position: relative;
+}
+
+.emoji {
+  cursor: pointer;
+  font-size: 1.1em;
+}
+
+.active-tooltip {
+  display: block !important;
+}
+</style>
+
 <script>
 document.getElementById('image-input').onchange = function (evt) {const [file] = this.files
 if (file) {const preview = document.getElementById('preview')
 preview.src = URL.createObjectURL(file)
 preview.style.display = 'block'}}
+</script>
+<script>
+const tooltipTemplate = document.getElementById('tooltip-box-template');
+const tooltipBox = tooltipTemplate.cloneNode(true);
+tooltipBox.id = 'dynamic-tooltip';
+document.body.appendChild(tooltipBox);
+
+const tooltips = {
+  'Название': 'Укажите название вашего рецепта, например: "Оливье классический".',
+  'Категория': 'Выберите или укажите категорию блюда, например: "Завтрак", "Обед", "Ужин".',
+  'Кухня': 'Укажите, к какой кухне мира относится блюдо, например: "Русская", "Итальянская", "Японская".',
+  'Сложность': 'Укажите уровень сложности приготовления от 1 до 5.',
+  'Время готовки (мин)': 'Укажите примерное время приготовления блюда в минутах.',
+  'Тип блюда': 'Укажите тип блюда, например: "Салаты", "Выпечка", "Закуски", "Напитки".',
+  'Тип приёма пищи': 'Укажите, для какого приёма пищи подходит блюдо: "Завтрак", "Обед", "Ужин", "Перекус", "Полдник".',
+  'Ингредиенты': 'Перечислите все необходимые ингредиенты, желательно по порядку использования.',
+  'Описание': 'Кратко опишите блюдо, его особенности или историю.',
+  'Подробная инструкция': 'Опишите пошагово процесс приготовления блюда.'
+};
+
+let currentTooltip = null;
+let currentTrigger = null;
+
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('emoji')) {
+      e.stopPropagation();
+
+      const triggerLabel = e.target.previousElementSibling;
+      const fieldName = triggerLabel ? triggerLabel.textContent.trim() : '';
+      const text = tooltips[fieldName] || '';
+
+      if (currentTooltip && currentTrigger === e.target) {
+          hideTooltip();
+          return;
+      }
+
+      if (currentTooltip) {
+          hideTooltip();
+          setTimeout(() => showTooltip(e.target, text), 50);
+      } else {
+          showTooltip(e.target, text);
+      }
+
+      currentTrigger = e.target;
+
+      setTimeout(() => {
+          document.addEventListener('click.tooltipHide', function hideOnClickOutside(event) {
+              if (!event.target.closest('.emoji') && !event.target.closest('#dynamic-tooltip')) {
+                  hideTooltip();
+                  document.removeEventListener('click.tooltipHide', hideOnClickOutside);
+              }
+          });
+       }, 100);
+
+  } else if (!e.target.closest('#dynamic-tooltip')) {
+      hideTooltip();
+  }
+});
+
+
+function showTooltip(emojiElement, text) {
+   const textContent = text;
+
+   const formGroup = emojiElement.closest('.form-group');
+   const groupRect = formGroup.getBoundingClientRect();
+
+   const topPosition = groupRect.bottom + window.scrollY + 10;
+   const leftPosition = groupRect.left + window.scrollX;
+
+   tooltipBox.style.top = `${topPosition}px`;
+   tooltipBox.style.left = `${leftPosition}px`;
+   tooltipBox.style.width = `${groupRect.width}px`;
+
+   tooltipBox.innerHTML = textContent;
+   tooltipBox.classList.add('active-tooltip');
+
+   currentTooltip = tooltipBox;
+}
+
+function hideTooltip() {
+   if (currentTooltip) {
+       currentTooltip.classList.remove('active-tooltip');
+       currentTooltip = null;
+       currentTrigger = null;
+   }
+}
+</script>
+<script>
+const imageInput = document.getElementById('image-input');
+const previewImage = document.getElementById('preview');
+
+imageInput.addEventListener('change', function () {
+    if (this.files && this.files[0]) {
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            previewImage.src = e.target.result;
+            previewImage.style.display = 'block';
+        };
+
+        reader.readAsDataURL(this.files[0]);
+    } else {
+        previewImage.style.display = 'none';
+    }
+});
 </script>
 {% endblock %}

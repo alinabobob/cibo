@@ -122,11 +122,13 @@
                 <strong>{{ recipe.user.username }}</strong>
               </a>
             </div>
-            <button class="btn btn-custom-purple btn-sm subscribe-btn"
-                    data-user-id="{{ recipe.user.id }}"
-                    data-url="{{ url_for('subscribe', user_id=recipe.user.id) }}">
-              Подписаться
-            </button>
+            {% if current_user.is_authenticated and recipe.user.id != current_user.id %}
+                <button class="btn btn-custom-purple btn-sm subscribe-btn"
+                        data-user-id="{{ recipe.user.id }}"
+                        data-url="{{ url_for('subscribe', user_id=recipe.user.id) }}">
+                    Подписаться
+                </button>
+            {% endif %}
           </div>
 
           <div class="recipe-image-container text-center p-3">
