@@ -757,5 +757,5 @@ def add_comment(recipe_id):
 if __name__ == '__main__':
     db_session.global_init("db/cibo.sqlite")
     build_index()
-    app.run(port=8080, host='127.0.0.1')
-    #serve(app, host='127.0.0.1', port=8080)
+    #app.run(port=8080, host='0.0.0.0')
+    serve(app, host='0.0.0.0', port=8080)
